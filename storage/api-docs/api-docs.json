@@ -1,0 +1,2603 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Docs api",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/": {},
+        "/offers/": {
+            "get": {
+                "tags": [
+                    "Offers"
+                ],
+                "summary": "Get product logs",
+                "description": "Retrieves product logs based on query parameters.",
+                "operationId": "getOffers",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search term for product logs",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "seller_name",
+                        "in": "query",
+                        "description": "Seller name to filter by",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "country",
+                        "in": "query",
+                        "description": "Country to filter by",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ProductLog"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Offers"
+                ],
+                "summary": "Create product logs",
+                "description": "Creates new product logs based on provided data.",
+                "operationId": "storeOffer",
+                "requestBody": {
+                    "description": "Product log data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "data": {
+                                        "type": "array",
+                                        "items": {
+                                            "required": [
+                                                "seller_id",
+                                                "amount",
+                                                "country"
+                                            ],
+                                            "properties": {
+                                                "seller_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "amount": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                },
+                                                "country": {
+                                                    "type": "string",
+                                                    "example": "US"
+                                                },
+                                                "archive": {
+                                                    "type": "string",
+                                                    "format": "binary"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Data processed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data processed successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ProductLog"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/offers//{id}": {
+            "put": {
+                "tags": [
+                    "Offers"
+                ],
+                "summary": "Update a product log",
+                "description": "Updates an existing product log.",
+                "operationId": "updateProductLog",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the product log to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Product log data to update",
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "amount": {
+                                        "type": "integer",
+                                        "example": 150
+                                    },
+                                    "country": {
+                                        "type": "string",
+                                        "example": "GB"
+                                    },
+                                    "on_sale": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "archive": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Data has been successfully updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data has been\n     *  *             successfully updated"
+                                        },
+                                        "offer": {
+                                            "$ref": "#/components/schemas/ProductLog"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Offers"
+                ],
+                "summary": "Delete a product log",
+                "description": "Deletes an existing product log.",
+                "operationId": "deleteProductLog",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the product log to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Data has been successfully deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data has been successfully deleted"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/offers//hot": {
+            "get": {
+                "tags": [
+                    "Offers"
+                ],
+                "summary": "Get hot product logs",
+                "description": "Retrieves a list of hot product logs.",
+                "operationId": "getHotProductLogs",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ProductLog"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Register a new user",
+                "operationId": "de9a8be19b458ebf24ac55d7333c5ec6",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "telegram",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "telegram": {
+                                        "type": "string",
+                                        "example": "@johndoe"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User registered successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string",
+                                            "example": "1|abcdefghijklmnopqrstuvwxyz"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Login user",
+                "operationId": "006355bde68a5508fa1f3449953ed64b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "login",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "login": {
+                                        "type": "string",
+                                        "example": "johndoe"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User logged in successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string",
+                                            "example": "1|abcdefghijklmnopqrstuvwxyz"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Logout user",
+                "operationId": "7b2bfa4aa2372ab1d9db7b0f40688581",
+                "responses": {
+                    "200": {
+                        "description": "Tokens revoked successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tokens Revoked"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/banks": {
+            "get": {
+                "tags": [
+                    "Banks"
+                ],
+                "summary": "Get bank logs",
+                "description": "Retrieves bank logs based on query parameters.",
+                "operationId": "getbanks",
+                "parameters": [
+                    {
+                        "name": "bank_link",
+                        "in": "query",
+                        "description": "Bank link to filter by",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "balance",
+                        "in": "query",
+                        "description": "Balance to filter by",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/BankLog"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Banks"
+                ],
+                "summary": "Create bank logs",
+                "description": "Creates new bank logs based on provided data.",
+                "operationId": "storeBankLog",
+                "requestBody": {
+                    "description": "Bank log data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "data": {
+                                        "type": "array",
+                                        "items": {
+                                            "required": [
+                                                "seller_id",
+                                                "amount",
+                                                "balance",
+                                                "bank_link"
+                                            ],
+                                            "properties": {
+                                                "seller_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "amount": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                },
+                                                "balance": {
+                                                    "type": "string",
+                                                    "example": "500"
+                                                },
+                                                "bank_link": {
+                                                    "type": "string",
+                                                    "example": "https://www.examplebank.com/user"
+                                                },
+                                                "archive": {
+                                                    "type": "string",
+                                                    "format": "binary"
+                                                },
+                                                "image": {
+                                                    "type": "string",
+                                                    "format": "binary"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Data processed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data processed successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/BankLog"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/banks/{id}/update": {
+            "put": {
+                "tags": [
+                    "Banks"
+                ],
+                "summary": "Update a bank log",
+                "description": "Updates an existing bank log.",
+                "operationId": "updateBankLog",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the bank log to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Bank log data to update",
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "amount": {
+                                        "type": "integer",
+                                        "example": 100
+                                    },
+                                    "bank_link": {
+                                        "type": "string",
+                                        "example": "https://www.examplebank.com/newuser"
+                                    },
+                                    "balance": {
+                                        "type": "string",
+                                        "example": "600"
+                                    },
+                                    "on_sale": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "archive": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Data has been successfully updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data has been successfully updated"
+                                        },
+                                        "bankLog": {
+                                            "$ref": "#/components/schemas/BankLog"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/banks/{id}/delete": {
+            "delete": {
+                "tags": [
+                    "Banks"
+                ],
+                "summary": "Delete a bank log",
+                "description": "Deletes an existing bank log.",
+                "operationId": "deleteBankLog",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the bank log to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Data has been successfully deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data has been successfully deleted"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/cart/": {
+            "get": {
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "Get products in the cart",
+                "description": "Retrieves product information for the specified product IDs in the cart.",
+                "operationId": "getCartProducts",
+                "parameters": [
+                    {
+                        "name": "products",
+                        "in": "query",
+                        "description": "Array of product IDs",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer",
+                                "format": "int64"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Product"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/cart/buy": {
+            "post": {
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "Purchase products in the cart",
+                "description": "Processes a purchase transaction for the specified products by the authenticated user.",
+                "operationId": "buyProducts",
+                "requestBody": {
+                    "description": "Request body for buying products",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "products"
+                                ],
+                                "properties": {
+                                    "products": {
+                                        "description": "Array of product IDs to purchase",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer",
+                                            "format": "int64"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Products have been successfully purchased",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Products have been successfully purchased"
+                                        },
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "balance": "Insufficient funds on the balance sheet"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/download": {
+            "get": {
+                "tags": [
+                    "Download"
+                ],
+                "summary": "Download a file",
+                "description": "Downloads a file from the server based on the provided file path.",
+                "operationId": "downloadFile",
+                "parameters": [
+                    {
+                        "name": "path",
+                        "in": "query",
+                        "description": "The path of the file to download",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File downloaded successfully",
+                        "content": {
+                            "application/octet-stream": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "File not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "File not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/payment/processes": {
+            "get": {
+                "tags": [
+                    "Payment"
+                ],
+                "summary": "Retrieve all payment processes",
+                "description": "Retrieve all payment processes for the authenticated user",
+                "operationId": "c443f4377e202585dba0bdec941b0a55",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Wallet"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/payment/{currency}": {
+            "post": {
+                "tags": [
+                    "Payment"
+                ],
+                "summary": "Process a payment transaction",
+                "description": "Process a payment transaction",
+                "operationId": "a4b0ecbcd6911ed7bd7ef872af515001",
+                "parameters": [
+                    {
+                        "name": "currency",
+                        "in": "path",
+                        "description": "Currency code (e.g., USDT, BTC)",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Payment process details",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "unique_key": {
+                                        "description": "Unique key for the transaction",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Transaction processed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/payment/exchange/{currency}": {
+            "post": {
+                "tags": [
+                    "Payment"
+                ],
+                "summary": "Get exchange rates",
+                "description": "Get exchange rates for a specific currency",
+                "operationId": "2da3e19c9919124aad2a85c60784ceb1",
+                "parameters": [
+                    {
+                        "name": "currency",
+                        "in": "path",
+                        "description": "Currency code (e.g., USD, EUR)",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/offers": {
+            "get": {
+                "tags": [
+                    "Offer Log"
+                ],
+                "summary": "Retrieve a list of product logs",
+                "operationId": "274bc26e0237ae844b20f48cb8a5700b",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search term",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "seller_name",
+                        "in": "query",
+                        "description": "Seller name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "country",
+                        "in": "query",
+                        "description": "Country",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Offer Log"
+                ],
+                "summary": "Store a new product log",
+                "operationId": "a9fc7c8b6ad8a1a7534fa0b981213b93",
+                "requestBody": {
+                    "description": "Product log data",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "data": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "seller_id": {
+                                                    "type": "integer",
+                                                    "example": "1"
+                                                },
+                                                "amount": {
+                                                    "type": "integer",
+                                                    "example": "100"
+                                                },
+                                                "country": {
+                                                    "type": "string",
+                                                    "example": "USA"
+                                                },
+                                                "archive": {
+                                                    "type": "string",
+                                                    "format": "binary"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data processed successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/offers/{id}/update": {
+            "put": {
+                "tags": [
+                    "Offer Log"
+                ],
+                "summary": "Update a product log",
+                "operationId": "5a7804d59343514a8a4e2a3753d4c6a4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the product log",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "amount": {
+                                        "type": "integer"
+                                    },
+                                    "archive": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "country": {
+                                        "type": "string"
+                                    },
+                                    "on_sale": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                }
+            }
+        },
+        "/offers/{id}/delete": {
+            "delete": {
+                "tags": [
+                    "Offer Log"
+                ],
+                "summary": "Delete a product log",
+                "operationId": "c8d73d4d5e63e1613a8ac1ce77935d32",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the product log",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/offers/hot": {
+            "get": {
+                "tags": [
+                    "Offer Log"
+                ],
+                "summary": "Retrieve a list of hot offers",
+                "operationId": "77389cda122462541af3a8d8aa692592",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/returns": {
+            "get": {
+                "tags": [
+                    "Product Returns"
+                ],
+                "summary": "List all product returns",
+                "description": "Retrieves a list of all product return requests.",
+                "operationId": "getProductReturns",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ProductReturn"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Product Returns"
+                ],
+                "summary": "Create a product return request",
+                "description": "Submits a new product return request.",
+                "operationId": "storeProductReturn",
+                "requestBody": {
+                    "description": "Product return data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "purchase_id",
+                                    "subject"
+                                ],
+                                "properties": {
+                                    "purchase_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "subject": {
+                                        "type": "string",
+                                        "example": "Defective product"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Product return request created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Product return request created successfully"
+                                        },
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "You have already submitted a request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "message": "You have already submitted a request"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/returns/{id}/refund": {
+            "patch": {
+                "tags": [
+                    "Product Returns"
+                ],
+                "summary": "Refund a product return",
+                "description": "Processes the refund for a product return request.",
+                "operationId": "refundProductReturn",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the product return",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The funds have been successfully refunded. The request is closed successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The funds have been successfully refunded. The request is closed successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/returns/{id}/close": {
+            "patch": {
+                "tags": [
+                    "Product Returns"
+                ],
+                "summary": "Close a product return request",
+                "description": "Closes a product return request without a refund.",
+                "operationId": "closeProductReturn",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the product return to close",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request is closed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Request is closed successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/returns/{id}": {
+            "get": {
+                "tags": [
+                    "Product Returns"
+                ],
+                "summary": "Show a product return request",
+                "description": "Retrieves details of a specific product return request.",
+                "operationId": "showProductReturn",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the product return",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Product return details retrieved successfully"
+                                        },
+                                        "product_return": {
+                                            "$ref": "#/components/schemas/ProductReturn"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/stats": {
+            "get": {
+                "tags": [
+                    "SellerStats"
+                ],
+                "summary": "Get statistics for a seller",
+                "description": "Retrieves statistics for the authenticated seller within a specified date range.",
+                "operationId": "getSellerStats",
+                "parameters": [
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "description": "Start date for the statistics period in YYYY-MM-DD format",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2024-01-01"
+                        }
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "description": "End date for the statistics period in YYYY-MM-DD format",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2024-01-31"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "purchases_count": {
+                                            "description": "The number of confirmed purchases.",
+                                            "type": "integer",
+                                            "example": 25
+                                        },
+                                        "refunded_count": {
+                                            "description": "The number of refunded orders.",
+                                            "type": "integer",
+                                            "example": 5
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tickets/{id}/send-message": {
+            "post": {
+                "tags": [
+                    "TicketChat"
+                ],
+                "summary": "Send a message in a ticket chat",
+                "description": "Sends a new message associated with a ticket by the authenticated user",
+                "operationId": "sendTicketMessage",
+                "requestBody": {
+                    "description": "Message data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "ticket_id",
+                                    "text"
+                                ],
+                                "properties": {
+                                    "ticket_id": {
+                                        "description": "The ID of the ticket",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "text": {
+                                        "description": "The content of the message to be sent",
+                                        "type": "string",
+                                        "example": "Hello, I need more details on this issue."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Message sent successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "Message Sent!"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tickets": {
+            "get": {
+                "tags": [
+                    "Tickets"
+                ],
+                "summary": "Get list of tickets",
+                "description": "Returns list of tickets with pagination",
+                "operationId": "getTickets",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Ticket"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Tickets"
+                ],
+                "summary": "Create a new ticket",
+                "description": "Create a new ticket with given input",
+                "operationId": "storeTicket",
+                "requestBody": {
+                    "description": "Ticket data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "product_id",
+                                    "subject",
+                                    "amount",
+                                    "comment"
+                                ],
+                                "properties": {
+                                    "product_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "subject": {
+                                        "type": "string",
+                                        "example": "Need assistance"
+                                    },
+                                    "amount": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 100.5
+                                    },
+                                    "comment": {
+                                        "type": "string",
+                                        "example": "Please assist with my issue"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Ticket created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ticket created successfully"
+                                        },
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    }
+                }
+            }
+        },
+        "/tickets/hot": {
+            "get": {
+                "tags": [
+                    "Tickets"
+                ],
+                "summary": "Get list of hot tickets",
+                "description": "Returns list of last 20 tickets",
+                "operationId": "getHotTickets",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Ticket"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
+        "/tickets/{id}": {
+            "get": {
+                "tags": [
+                    "Tickets"
+                ],
+                "summary": "Get ticket by ID",
+                "description": "Returns a single ticket",
+                "operationId": "showTicket",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Ticket id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Ticket"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/tickets/{id}/close": {
+            "patch": {
+                "tags": [
+                    "Tickets"
+                ],
+                "summary": "Close a ticket",
+                "description": "Marks a ticket as closed",
+                "operationId": "closeTicket",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Ticket id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ticket has been successfully closed"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/transactions": {
+            "get": {
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Get all transactions for the authenticated user",
+                "description": "Retrieves a paginated list of transactions associated with the authenticated user, sorted by most recent.",
+                "operationId": "getAllUserTransactions",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Transaction"
+                                            }
+                                        },
+                                        "links": {
+                                            "properties": {
+                                                "first": {
+                                                    "type": "string",
+                                                    "example": "http://example.com/transactions?page=1"
+                                                },
+                                                "last": {
+                                                    "type": "string",
+                                                    "example": "http://example.com/transactions?page=10"
+                                                },
+                                                "prev": {
+                                                    "type": "string",
+                                                    "example": "null"
+                                                },
+                                                "next": {
+                                                    "type": "string",
+                                                    "example": "http://example.com/transactions?page=2"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "from": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "path": {
+                                                    "type": "string",
+                                                    "example": "http://example.com/transactions"
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "to": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/settings": {
+            "get": {
+                "tags": [
+                    "UserSettings"
+                ],
+                "summary": "Get user settings",
+                "description": "Returns the current user's settings including personal information and preferences",
+                "operationId": "getUserSettings",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "name": {
+                                            "type": "string",
+                                            "example": "John Doe"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "format": "email",
+                                            "example": "john.doe@example.com"
+                                        },
+                                        "telegram": {
+                                            "type": "string",
+                                            "example": "@johndoe"
+                                        },
+                                        "dark_mode": {
+                                            "type": "boolean",
+                                            "example": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "UserSettings"
+                ],
+                "summary": "Update user settings",
+                "description": "Updates the current user's settings including personal information and preferences",
+                "operationId": "updateUserSettings",
+                "requestBody": {
+                    "description": "User settings to update",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john.new@example.com"
+                                    },
+                                    "telegram": {
+                                        "type": "string",
+                                        "example": "@johnnew"
+                                    },
+                                    "new_password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "newPassword123"
+                                    },
+                                    "current_password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "currentPassword123"
+                                    },
+                                    "dark_mode": {
+                                        "type": "boolean",
+                                        "example": false
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Settings updated successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Settings updated successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/withdrawals": {
+            "post": {
+                "tags": [
+                    "Withdrawals"
+                ],
+                "summary": "Create a new withdrawal transaction",
+                "description": "Creates a new withdrawal request for the authenticated user.",
+                "operationId": "createWithdrawal",
+                "requestBody": {
+                    "description": "Withdrawal request details",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "amount",
+                                    "address"
+                                ],
+                                "properties": {
+                                    "amount": {
+                                        "description": "The amount to withdraw",
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 100.5
+                                    },
+                                    "address": {
+                                        "description": "The withdrawal address",
+                                        "type": "string",
+                                        "example": "1BoatSLRHtKNngkdXEeobR76b53LETtpyT"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "The withdrawal transaction has been successfully created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The withdrawal transaction has been successfully created"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "BankLog": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "seller_id": {
+                        "type": "integer"
+                    },
+                    "amount": {
+                        "type": "integer"
+                    },
+                    "balance": {
+                        "type": "string"
+                    },
+                    "bank_link": {
+                        "type": "string"
+                    },
+                    "archive_link": {
+                        "type": "string"
+                    },
+                    "image_link": {
+                        "type": "string"
+                    },
+                    "on_sale": {
+                        "type": "boolean"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Product": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "productable_id": {
+                        "type": "integer"
+                    },
+                    "productable_type": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "ProductLog": {
+                "required": [
+                    "seller_id",
+                    "amount",
+                    "archive_link",
+                    "country"
+                ],
+                "properties": {
+                    "seller_id": {
+                        "description": "The ID of the seller associated with the product log",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "amount": {
+                        "description": "The amount or value associated with the product log",
+                        "type": "integer",
+                        "example": 100
+                    },
+                    "archive_link": {
+                        "description": "URL to the archive containing product log details",
+                        "type": "string",
+                        "example": "http://example.com/archives/productlog1.zip"
+                    },
+                    "is_sold": {
+                        "description": "Indicates whether the product log has been sold",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "country": {
+                        "description": "The country associated with the product log",
+                        "type": "string",
+                        "example": "US"
+                    },
+                    "on_sale": {
+                        "description": "Indicates whether the product log is available for sale",
+                        "type": "boolean",
+                        "example": true
+                    }
+                },
+                "type": "object"
+            },
+            "ProductReturn": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "user_id": {
+                        "type": "integer"
+                    },
+                    "seller_id": {
+                        "type": "integer"
+                    },
+                    "subject": {
+                        "type": "string"
+                    },
+                    "amount": {
+                        "type": "integer"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "purchase_id": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Ticket": {
+                "required": [
+                    "user_id",
+                    "seller_id",
+                    "subject",
+                    "amount",
+                    "status"
+                ],
+                "properties": {
+                    "user_id": {
+                        "description": "The ID of the user who created the ticket",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "seller_id": {
+                        "description": "The ID of the seller associated with the ticket",
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "subject": {
+                        "description": "The subject of the ticket",
+                        "type": "string",
+                        "example": "Need assistance with product"
+                    },
+                    "amount": {
+                        "description": "The amount associated with the ticket, if any",
+                        "type": "number",
+                        "format": "float",
+                        "example": 99.99
+                    },
+                    "is_opened": {
+                        "description": "The current status of the ticket",
+                        "type": "boolean",
+                        "example": true
+                    }
+                },
+                "type": "object"
+            },
+            "Transaction": {
+                "required": [
+                    "amount",
+                    "type",
+                    "status",
+                    "user_id"
+                ],
+                "properties": {
+                    "amount": {
+                        "description": "The amount of the transaction",
+                        "type": "number",
+                        "format": "float",
+                        "example": 150
+                    },
+                    "type": {
+                        "description": "The type of the transaction",
+                        "type": "string",
+                        "example": "deposit"
+                    },
+                    "status": {
+                        "description": "The current status of the transaction",
+                        "type": "string",
+                        "example": "Successfully"
+                    },
+                    "user_id": {
+                        "description": "The ID of the user associated with the transaction",
+                        "type": "integer",
+                        "example": 1
+                    }
+                },
+                "type": "object"
+            },
+            "Wallet": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "unique_key": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "type": "string"
+                    },
+                    "private_wif": {
+                        "description": "Private Wallet Import Format (WIF) key",
+                        "type": "string",
+                        "format": "password"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    }
+}

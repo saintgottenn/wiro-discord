@@ -1,0 +1,23 @@
+{
+    "private": true,
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build"
+    },
+    "devDependencies": {
+        "axios": "^1.6.8",
+        "laravel-vite-plugin": "^0.7.2",
+        "lodash": "^4.17.19",
+        "postcss": "^8.1.14",
+        "vite": "^4.0.0"
+    },
+    "dependencies": {
+        "bitcoinjs-lib": "^6.1.5",
+        "ecpair": "^2.1.0",
+        "laravel-echo": "^1.16.0",
+        "laravel-echo-server": "^1.6.3",
+        "pusher-js": "^8.4.0-rc2",
+        "socket.io-client": "^4.7.5",
+        "tiny-secp256k1": "^2.2.3"
+    }
+}

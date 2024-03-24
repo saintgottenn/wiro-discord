@@ -1,0 +1,22 @@
+name: blacklog
+recipe: laravel
+config:
+  webroot: public
+  php: 8.1
+  via: nginx
+
+services:
+  appserver:
+    type: php:8.1
+  database:
+    type: mysql
+    creds:
+      user: myapp
+      password: myapp
+      database: myapp
+    ports:
+      - "3306:3306"
+
+  phpmyadmin:
+    type: phpmyadmin
+    hosts: database
