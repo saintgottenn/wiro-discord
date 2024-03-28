@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Wallet;
+use Brick\Math\BigDecimal;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -36,16 +38,25 @@ class PaymentController extends Controller
         
         if ($response->successful()) {
             $responseData = $response->json();
-
+            
             if($responseData !== false) {
-                
-                Transaction::create([
-                    'user_id' => $request->user()->id,
-                    'amount' => $responseData['usdValue'],
-                    'type' => 'Deposit',
-                    'status' => 'Successfully',
-                ]);
+                foreach ($responseData as $data) {
+                    Transaction::create([
+                        'user_id' => $request->user()->id,
+                        'amount' => $data['usdValue'],
+                        'type' => 'Deposit',
+                        'status' => 'Successfully',
+                    ]);
 
+                    $user = User::find($request->user()->id);
+
+                    $amountWithoutDollarSign = str_replace('$', '', $data['usdValue']);
+                    $newBalance = BigDecimal::of($user->balance)->plus($amountWithoutDollarSign);
+                    
+                    $user->balance = $newBalance->__toString();
+                    $user->save();
+                }
+                
                 return response()->json(true);
             } 
 

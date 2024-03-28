@@ -349,35 +349,85 @@ async function checkTRONTransactions(address) {
 //   privateKey: '306349BC29B7C7F35D20777EADA584035F0C6A85B9DD28DECB32EE3E31AD7071'
 // }
 
-async function sendTRON(adminAddress, senderPrivateKey, senderAddress, amount) {
-    const tronWeb = new TronWeb(
-        fullNode,
-        solidityNode,
-        eventServer,
-        senderPrivateKey
-    );
+const Web3 = require("web3"); // Убедитесь, что библиотека Web3 установлена
+const HttpProvider = require("web3-providers-http");
 
-    adminAddress = "TFyDafr8oLnCk1PKibrXEVC2v28RCUSyGp";
+// Асинхронная функция для отправки токенов TRC20
+async function sendTRC20(
+    adminAddress,
+    senderPrivateKey,
+    senderAddress,
+    amount
+) {
+    // Адрес контракта USDT в сети TRON
+    const usdtContractAddress = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t";
+
+    // Минимальный ABI для взаимодействия с контрактом
+    const minABI = [
+        // transfer
+        {
+            constant: false,
+            inputs: [
+                { name: "_to", type: "address" },
+                { name: "_value", type: "uint256" },
+            ],
+            name: "transfer",
+            outputs: [{ name: "", type: "bool" }],
+            type: "function",
+        },
+        // decimals
+        {
+            constant: true,
+            inputs: [],
+            name: "decimals",
+            outputs: [{ name: "", type: "uint8" }],
+            type: "function",
+        },
+    ];
 
     try {
-        const usdtContractAddress = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t";
-        const contract = await tronWeb.contract().at(usdtContractAddress);
+        // Инициализация Web3
+        const web3 = new Web3(new HttpProvider("https://api.trongrid.io")); // Используйте провайдера TronGrid или другой узел TRON
 
-        const decimals = await contract.decimals().call();
-        const tokenAmount = (amount / 1000000) * Math.pow(10, decimals);
+        // Создание экземпляра контракта
+        const contract = new web3.eth.Contract(minABI, usdtContractAddress);
 
-        const transaction = await contract
+        // Получение количества десятичных знаков токена
+        const decimals = await contract.methods.decimals().call();
+
+        // Конвертация количества токенов в соответствии с десятичными
+        const tokenAmount = web3.utils
+            .toBN(amount)
+            .mul(web3.utils.toBN(10).pow(web3.utils.toBN(decimals)));
+
+        // Добавление аккаунта отправителя в кошелек Web3
+        const account = web3.eth.accounts.privateKeyToAccount(senderPrivateKey);
+        web3.eth.accounts.wallet.add(account);
+
+        // Выполнение транзакции
+        const transaction = await contract.methods
             .transfer(adminAddress, tokenAmount)
             .send({
                 from: senderAddress,
-                feeLimit: 20 * 1e6,
+                gas: 100000, // Установите лимит газа
+                gasPrice: "1000000000", // Установите цену газа (в wei)
             });
 
-        console.log("Transaction receipt", transaction);
+        // Вывод информации о транзакции
+        console.log("Transaction receipt:", transaction);
     } catch (error) {
-        console.error("Error sending USDT:", error);
+        // Обработка и вывод ошибок
+        console.error("Error sending TRC20 token:", error);
     }
 }
+
+// Пример использования функции
+sendTRC20(
+    "АДРЕС_ПОЛУЧАТЕЛЯ",
+    "ВАШ_ПРИВАТНЫЙ_КЛЮЧ",
+    "ВАШ_АДРЕС_ОТПРАВИТЕЛЯ",
+    "СУММА_ТОКЕНОВ"
+);
 
 app.post("/check-transactions", async (req, res) => {
     const { uniqueKey, currency, userId } = req.body; // Теперь мы ожидаем uniqueKey в теле запроса
@@ -420,9 +470,7 @@ app.post("/check-transactions", async (req, res) => {
             }
 
             res.json(
-                ...(transactionsData.length
-                    ? transactionsData
-                    : [transactionsData])
+                transactionsData.length ? transactionsData : transactionsData
             );
         } catch (error) {
             console.log(error);
@@ -470,9 +518,7 @@ app.post("/check-transactions", async (req, res) => {
             }
 
             res.json(
-                ...(transactionsData.length
-                    ? transactionsData
-                    : [transactionsData])
+                transactionsData.length ? transactionsData : transactionsData
             );
         } catch (error) {
             console.log(error);
